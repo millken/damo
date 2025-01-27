@@ -1,0 +1,1 @@
+export { default as DecorativeBox } from "./DecorativeBox.svelte";
