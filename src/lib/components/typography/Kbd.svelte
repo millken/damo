@@ -1,25 +1,29 @@
-<script lang="ts">
-    import { marginPropDefs } from '../../props/margin.props.js';
-    import { extractProps } from '$lib/helpers/extract-props.js';
-    import { kbdPropDefs } from './kbd.props.js';
-    import Slot from '../slot/Slot.svelte';
-    import clsx from 'clsx';
-    let {
-        children,
-        ...props
-    } = $props();
-    const {
-        asChild = undefined,
-        className,
-        ...rest
-    } = $derived(extractProps(props, kbdPropDefs, marginPropDefs));
+<script module lang="ts">
+    import { type Snippet, onMount } from "svelte";
+    import type { ClassNameValue } from "tailwind-merge";
+    import { kbdTheme } from "@tailus/themer";
+    type KbdProps = {
+        ref?: (node: HTMLElement) => void;
+        className?: ClassNameValue;
+        children: Snippet;
+    };
 </script>
 
-<Slot
-    as="kbd"
-      {asChild}
-      {...rest}
-      class={clsx('rt-reset', 'rt-Kbd', className)}
-    >
-        {@render children?.()}
-</Slot>
+<script lang="ts">
+    let { ref = $bindable(), className, children, ...props }: KbdProps = $props();
+    let el: HTMLElement;
+    onMount(() => {
+        ref?.(el);
+    });
+</script>
+
+<svelte:element
+    this={"kbd"}
+    bind:this={el}
+    class={kbdTheme({
+        className,
+    })}
+    {...props}
+>
+    {@render children?.()}
+</svelte:element>

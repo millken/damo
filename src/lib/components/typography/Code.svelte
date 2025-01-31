@@ -1,30 +1,29 @@
-<script lang="ts">
-    import { marginPropDefs } from '../../props/margin.props.js';
-    import { extractProps } from '$lib/helpers/extract-props.js';
-    import { codePropDefs } from './code.props.js';
-    import Slot from '../slot/Slot.svelte';
-    import clsx from 'clsx';
-    let {
-        ref=$bindable(),
-        children,
-        ...props
-    } = $props();
-    const {
-        asChild = undefined,
-        className,
-        color,
-        ...rest
-    } = $derived(extractProps(props, codePropDefs, marginPropDefs));
-    const resolvedColor = $derived(props.variant === 'ghost' ? color || undefined : color);
+<script module lang="ts">
+    import { type Snippet, onMount } from "svelte";
+    import type { ClassNameValue } from "tailwind-merge";
+    import { codeTheme, type CodeThemeProps } from "@tailus/themer";
+    import type { VariantProps } from "tailwind-variants";
+
+    type Intent = VariantProps<typeof codeTheme>["intent"];
+
+    type CodeProps = {
+        intent: CodeThemeProps["intent"];
+        className?: ClassNameValue;
+        children: Snippet;
+    };
 </script>
 
-<Slot
-    as="code"
-      {asChild}
-      data-accent-color={resolvedColor}
-      {...rest}
-      ref={ref}
-      class={clsx('rt-reset', 'rt-Code', className)}
-    >
-        {@render children?.()}
-</Slot>
+<script lang="ts">
+    let { intent, className, children, ...props }: CodeProps = $props();
+</script>
+
+<svelte:element
+    this={"code"}
+    class={codeTheme({
+        intent,
+        className,
+    })}
+    {...props}
+>
+    {@render children?.()}
+</svelte:element>

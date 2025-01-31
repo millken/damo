@@ -1,7 +1,6 @@
 <script lang="ts">
     import { Layout, Side, Header, Content } from "$lib/index.js";
     import './style.css';
-    import "../lib/styles/styles.css";
 
     let { children } = $props();
 
